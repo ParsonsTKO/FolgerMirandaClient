@@ -1,0 +1,508 @@
+{% extends "DAPClientBundle::base_layout.html.twig" %}
+
+{% if record.images is defined and record.images|length > 0 %}
+    {% set mainImage = record.images|first %}
+    {% set imagesEndpoint = viewSettings.images_endpoint %}
+{% endif %}
+
+{% block header %}
+    {{ render(controller("DAPClientBundle:Header:show", {"showback": false})) }}
+{% endblock %}
+
+{% block head_metadata %}
+    {{ render(controller("DAPClientBundle:Head:metadata", {"detailMeta" : detailMeta })) }}
+{% endblock %}
+
+{% block head_title %}
+    {% if record is defined and record|length > 0 %}
+        {% if record.name is defined %}
+            {{ render(controller("DAPClientBundle:Head:title", {"viewTitle": record.name})) }}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if record is defined and record|length > 0 %}
+        <div class="TopBar">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <section class="TopBar-block">
+                            <group class="Metadata">
+                                <div class="Metadata-label">
+                                    {{ "Creator"|upper }}
+                                </div>
+                                <div class="Metadata-value">
+                                    {% if record.creator %}
+                                       <a href="/search?creatorsearch={% if record.creator.givenName is defined %}{{ record.creator.givenName|url_encode }}{% endif %}||{% if record.creator.familyName is defined %}{{ record.creator.familyName|url_encode }}{% endif %}">
+                                        {% if record.creator.givenName is defined %}
+                                            {{ record.creator.givenName }}
+                                        {% endif %}
+                                        {% if record.creator.familyName is defined %}
+                                            {{ record.creator.familyName }}
+                                        {% endif %}
+                                        {#</a>#}
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
+                                </div>
+                            </group>
+                        </section>
+                        {#<section class="TopBar-block">
+                            <group class="Metadata">
+                                <div class="Metadata-label">
+                                    {{ "Parent Record"|upper }}
+                                </div>
+                                <div class="Metadata-value">
+                                    TODO
+                                </div>
+                            </group>
+                        </section>#}
+                        {% if record.dateCreated or record.datePublished %}
+                        <section class="TopBar-block">
+                            <group class="Metadata">
+                                <div class="Metadata-label">
+                                    {{ "Date"|upper }}
+                                </div>
+                                <div class="Metadata-value">
+                                    {% if record.dateCreated %}
+                                        <a href="/search?createddatesearch={{  record.dateCreated|url_encode }}">{{  record.dateCreated }}</a>
+                                    {% else %}
+                                        {% if record.datePublished.startDate %}
+                                            {{ record.datePublished.startDate }}
+                                            {% if record.datePublished.endDate %}
+                                                 - {{ record.datePublished.endDate }}
+                                            {% endif %}
+                                        {% else %}
+                                            {% if record.datePublished.endDate %}
+                                                {{ record.datePublished.endDate }}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </group>
+                        </section>
+                        {% endif %}
+
+                        {% if record.locationCreated %}
+                        <section class="TopBar-block">
+                            <group class="Metadata">
+                                <div class="Metadata-label">
+                                    {{ "Publication Place"|upper }}
+                                </div>
+                                <div class="Metadata-value">
+                                    {% if record.locationCreated %}
+                                        <a href="/search?{% if record.locationCreated.addressLocality %}address={{ record.locationCreated.addressLocality|url_encode }}{% endif %}{% if record.locationCreated.addressCountry %}{% if record.locationCreated.addressLocality %}&{% endif %}locality={{ record.locationCreated.addressCountry|url_encode }}{% endif %}">
+                                    {% endif %}
+                                    {% if record.locationCreated %}
+                                            {% if record.locationCreated.addressLocality %}
+                                                {{ record.locationCreated.addressLocality }}
+                                            {% endif %}
+                                            {% if record.locationCreated.addressCountry %}
+                                                {{ record.locationCreated.addressCountry }}
+                                            {% endif %}
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </group>
+                        </section>
+                        {% endif %}
+
+                        <section class="TopBar-block">
+                            <group class="Metadata">
+                                <div class="Metadata-label">
+                                    {{ "Format"|upper }}
+                                </div>
+                                <div class="Metadata-value">
+                                    <a href="/search?format={{ record.format }}">{{ record.format|capitalize }}</a>
+                                </div>
+                            </group>
+                        </section>
+                        {% if record.folgerCallNumber %}
+                        <section class="TopBar-block">
+                            <group class="Metadata">
+                                <div class="Metadata-label">
+                                    {{ "Call Number"|upper }}
+                                </div>
+                                <div class="Metadata-value">
+                                        <a href="/search?callnumber={{ record.folgerCallNumber|url_encode }}">{{ record.folgerCallNumber }}</a>
+                                </div>
+                            </group>
+                        </section>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="Main">
+                <article class="Article Article--single">
+                    <h1 class="Article-title">
+                        {% if record.name|length > 150 %}
+                         <span id="truncatedname">{{ record.name|slice(0,150) }}</span>
+                            <span id="expand" onclick="document.getElementById('truncatedname').setAttribute('style','display:none;');
+                            document.getElementById('fullname').setAttribute('style','display:inline;');
+                            document.getElementById('expand').setAttribute('style','display:none;');" style="cursor: pointer;">...</span>
+                            <span id="fullname" style="display:none;">{{ record.name }}</span>
+                        {% else %}
+                        {{ record.name }}
+                        {% endif %}
+                    </h1>
+                    <figure class="Article-image">
+                        <div class="mainImage" style="display:none;">
+                            <a href="#" class="main-image-left" style="text-decoration:none;font-size:10em;" data-item-type=""  data-item-show="" data-item-url="" data-item-title="" data-item-size="" data-item-order="">&lt;</a>
+                            <img class="mainImageItself" src="" alt="">
+                            <a href="#" class="main-image-right" style="text-decoration:none;font-size:10em;" data-item-type="" data-item-show="" data-item-url="" data-image-title="" data-item-size="" data-item-order="">&gt;</a>
+                            <div class="Table Table--files">
+                                <div class="Table-actions">
+                                    <div class="mainImageTitle" title=""></div>
+                                    <span class="Table-fileSize mainImageFileSize"></span>
+                                    <span class="Table-actions">
+                                        <a href="" class="Table-action Table-action--download mainImageDownload"></a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mainOembed" style="display:none;">
+                            <a href="#" class="main-image-left" style="text-decoration:none;font-size:10em;" data-item-type=""  data-image-show="" data-item-url="" data-image-title="" data-image-size="" data-item-order="">&lt;</a>
+                            <div class="Article-image oembed-target" style="">
+                                {#<a class="oembed" href=""></a>#}
+                            </div>
+                            <a href="#" class="main-image-right" style="text-decoration:none;font-size:10em;" data-item-type=""  data-image-show="" data-item-url="" data-image-title="" data-image-size="" data-item-order="">&gt;</a>
+                            <div class="Table Table--files">
+                                <div class="Table-actions">
+                                    <div class="mainImageTitle" title=""></div>
+                                    <span class="Table-actions">
+                                         <a href="" class="Table-action omebed-goto">Visit</a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </figure>
+                </article>
+                <aside class="Aside Aside--single">
+                    <ul class="Aside-nav">
+                        <li class="Aside-navItem Aside-navItem--add" data-dapid="{{ record.dapID }}" data-name="{{ record.name }}">
+                            <a href="#" class="collection-star">
+                                Add to Compendium
+                            </a>
+                        </li>
+                        {#<li class="Aside-navItem Aside-navItem--bookReader">
+                            <a href="#">
+                                TODO
+                            </a>
+                        </li>
+                        <li class="Aside-navItem Aside-navItem--download">
+                            <a href="#">
+                                TODO
+                            </a>
+                        </li>#}
+                    </ul>
+                    <div class="Aside-main">
+                        {% if record.alternateName is defined and record.alternateName != "" %}
+                            <section>
+                                <label class="Label">
+                                    {{ "Alternate Name"|upper }}
+                                </label>
+                                <p>
+                                    <a href="/search?searchphrase={{ record.alternateName|url_encode }}">{{ record.alternateName }}</a>
+                                </p>
+                            </section>
+                        {% endif %}
+                        {% if record.description is defined  and record.description != ""%}
+                            <section>
+                                <label class="Label">
+                                    {{ "Physical Description"|upper }}
+                                </label>
+                                <p>
+                                    {{ record.description }}
+                                </p>
+                            </section>
+                        {% endif %}
+                        {% if record.extent is defined  and record.extent != ""%}
+                            <section>
+                                <label class="Label">
+                                    {{ "Extent"|upper }}
+                                </label>
+                                <p>
+                                    <a href="/search?phrasefield=extent&phrasefieldsearch={{ record.extent }}">{{ record.extent }}</a>
+                                </p>
+                            </section>
+                        {% endif %}
+                        {% if record.size is defined  and record.size != ""%}
+                            <section>
+                                <label class="Label">
+                                    {{ "Size"|upper }}
+                                </label>
+                                <p>
+                                    <a href="/search?phrasefield=size&phrasefieldsearch={{ record.size }}">{{ record.size }}</a>
+                                </p>
+                            </section>
+                        {% endif %}
+                        {% if record.genre is defined  and record.genre != ""%}
+                        <section>
+                            <label class="Label">
+                                {{ "Subjects"|upper }}
+                            </label>
+                            <p>
+                                {% for thisthing in record.genre %}
+                                        <a href="/search?searchphrase={{ thisthing.search }}">{{ thisthing.search }}</a><br/>
+                                {% endfor %}
+                            </p>
+                        </section>
+                        {% endif %}
+                        <section>
+                            <label class="Label">
+                                {{ "Language"|upper }}
+                            </label>
+                            <p>
+                                <a href="/search?in_language={{ record.inLanguage }}">{{ record.languageDisplay|capitalize }}</a>
+                            </p>
+                        </section>
+    {#
+                        <section>
+                            <label class="Label">
+                                {{ "Rights"|upper }}
+                            </label>
+                            <p>
+                                TODO
+                            </p>
+                        </section>
+    #}
+                    </div>
+                    {% if mainImage is defined or ( record.folgerRelatedItems is defined and record.folgerRelatedItems|length > 0) %}
+                    <div class="Aside-footer">
+                            <h4></h4>
+                            <table class="related-items-list Table Table--files" data-image-count="{{ record.folgerRelatedItems|length }}">
+                                <thead>
+                                <tr>
+                                    <th colspan="4">{{ "Browse Recommended Media"|upper }}</th>
+                                    {#
+                                    <th colspan="3">{{ "Type"|upper }}</th>
+                                    <th colspan="2">{{ "Size"|upper }}</th>
+                                    #}
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+    {#
+                        <h4>Alternate Sizes of Main Image</h4>
+                        <table class="Table Table--files">
+                            <thead>
+                                <tr>
+                                    <th>{{ "File title"|upper }}</th>
+                                    <th>{{ "Type"|upper }}</th>
+                                    <th colspan="2">{{ "Size"|upper }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if mainImage is defined %}
+                                    {% if mainImage.size5jpgURL is defined and mainImage.size5jpgURL != "" %}
+                                        {% set size5jpgURL = imagesEndpoint ~ mainImage.size5jpgURL %}
+                                        {% set size5jpgURLSize = size5jpgURL|image_info %}
+                                        {% set size5jpgURLParts = mainImage.size5jpgURL|split('/') %}
+                                        <tr>
+                                            <td class="Table-fileTitle">Image</td>
+                                            <td class="Table-fileType">.{{ size5jpgURLSize.type|lower }}</td>
+                                            <td class="Table-fileSize">{{ size5jpgURLSize.width }}x{{ size5jpgURLSize.height }} - {{ size5jpgURLSize.size }}</td>
+                                            <td class="Table-actions">
+                                                <a href="" class="Table-action Table-action--add"></a>
+                                                <a href="{{ path('dap_client_download', {'rootfile': mainImage.rootfile,'image': size5jpgURLParts[5]}) }}" class="Table-action Table-action--download"></a>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                    {% if mainImage.size6jpgURL is defined and mainImage.size6jpgURL != "" %}
+                                        {% set size6jpgURL = imagesEndpoint ~ mainImage.size6jpgURL %}
+                                        {% set size6jpgURLSize = size6jpgURL|image_info %}
+                                        {% set size6jpgURLParts = mainImage.size6jpgURL|split('/') %}
+                                        <tr>
+                                            <td class="Table-fileTitle">Image</td>
+                                            <td class="Table-fileType">.{{ size6jpgURLSize.type|lower }}</td>
+                                            <td class="Table-fileSize">{{ size6jpgURLSize.width }}x{{ size6jpgURLSize.height }} - {{ size6jpgURLSize.size }}</td>
+                                            <td class="Table-actions">
+                                                <a href="" class="Table-action Table-action--add"></a>
+                                                <a href="{{ path('dap_client_download', {'rootfile': mainImage.rootfile,'image': size6jpgURLParts[5]}) }}" class="Table-action Table-action--download"></a>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                    {% if mainImage.size7jpgURL is defined and mainImage.size7jpgURL != "" %}
+                                        {% set size7jpgURL = imagesEndpoint ~ mainImage.size7jpgURL %}
+                                        {% set size7jpgURLSize = size7jpgURL|image_info %}
+                                        {% set size7jpgURLParts = mainImage.size7jpgURL|split('/') %}
+                                        <tr>
+                                            <td class="Table-fileTitle">Image</td>
+                                            <td class="Table-fileType">.{{ size7jpgURLSize.type|lower }}</td>
+                                            <td class="Table-fileSize">{{ size7jpgURLSize.width }}x{{ size7jpgURLSize.height }} - {{ size7jpgURLSize.size }}</td>
+                                            <td class="Table-actions">
+                                                <a href="" class="Table-action Table-action--add"></a>
+                                                <a href="{{ path('dap_client_download', {'rootfile': mainImage.rootfile,'image': size7jpgURLParts[5]}) }}" class="Table-action Table-action--download"></a>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+    #}
+                    </div>
+                    {%  endif %}
+
+                </aside>
+            </div>
+
+<style>
+    tr.related-images-list:hover {
+        cursor: pointer;
+    }
+    a.main-image-left, a.main-image-right {
+        display: none;
+    }
+</style>
+{#    	<section class="ContentSlider ContentSlider--records">
+            <h4 class="ContentSlider-title">
+                Related Images
+            </h4>
+            <div class="ContentSlider-items">
+                {% if record.images is defined and record.images|length > 0 %}
+                    {% for image in record.images %}
+                        {% if not loop.first %}
+                            {% if image.size4jpgURL is defined and image.size4jpgURL != "" %}
+                                <figure class="ContentSlider-item">
+                                    <img class="" src="{{ imagesEndpoint ~ image.size4jpgURL }}" alt="{{ image.title }}">
+                                    <figcaption>
+                                        <summary class="ContentSlider-itemSummary">
+                                            <p>{{ image.title }}</p>
+                                        </summary>
+                                        <div class="ContentSlider-itemMetadata">
+                                            {{ image.pageNumber }}
+                                        </div>
+                                    </figcaption>
+                                </figure>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </section>
+#}
+    {% endif %}
+  {#
+    {% if mainImage is defined or ( record.folgerRelatedItems is defined and record.folgerRelatedItems|length > 0) %}
+        <script>
+            var relatedItemsList = [
+                {% for relatedItem in record.folgerRelatedItems%}
+                {% set itemOrder = loop.index %}
+                {% if relatedItem.rootfile is defined and "http" in relatedItem.rootfile %}
+                {
+                    "type" : "oembed",
+                    "url" : "{{ relatedItem.rootfile }}",
+                    "title": "{{ relatedItem.label }}",
+                    "show" : "{{ relatedItem.description }}",
+                    "root" : "{{  relatedItem.rootfile }}",
+                    "order": "{{ itemOrder }}",
+                    "filetype" : "",
+                    "filesize" : "",
+                    "download" : "{{ relatedItem.rootfile }}",
+                },
+                {%  elseif relatedItem.rootfile matches '/^\\d+$/' %}{ # it's an integer # }
+                {% if record.images is defined and record.images|length > 0 %}
+                {% for image in record.images %}
+                {%  if image.rootfile == relatedItem.rootfile %}
+                {% if image.size4jpgURL is defined and image.size4jpgURL != "" %}
+                {%  set tempImage = imagesEndpoint ~ image.size4jpgURL %}
+                {% set tempImageInfo = tempImage|image_info %}
+                {
+                    "type" : "image",
+                    "url" : "{{ imagesEndpoint ~ image.size4jpgURL }}",
+                    "title" : "{{ image.title }}",
+                    "show" : "{{ image.pageNumber }}",
+                    "root" : "{{ image.rootfile }}",
+                    "order" : "{{ itemOrder }}",
+                    "filetype" : ".{{ tempImageInfo.type|lower }}",
+                    "filesize" : "{{ tempImageInfo.width }}x{{ tempImageInfo.height }} - {{ tempImageInfo.size }}",
+                    "download" : "{{ path('dap_client_download', {'rootfile': mainImage.rootfile,'image': image.size4jpgURL|split('/')[5]}) }}",
+                },
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+            ];
+        </script>
+    {%  endif %}
+  #}
+    <script>
+        relatedItemsList = {{ relatedItemsList|raw }};
+        collectionList = {{ collectionList|raw }}
+    </script>
+
+    <script type='application/ld+json'>
+    {
+        "@context": "http://schema.org/",
+        "@type": "WebPage",
+        {% if record.creator is defined and record.creator.givenName is defined and record.creator.familyName is defined %}
+        "creator": "{{ record.creator.givenName }} {{ record.creator.familyName }}",
+        {% endif %}
+         {% if record.description is defined %}
+            {% if record.description is not iterable and record.description != '' %}
+            "description": "{{ record.description }}",
+            {% endif %}
+        {% endif %}
+        "name": "{{ record.name }}",
+        {%  if record.dateCreated is defined and record.dateCreated != '' %}
+	    "dateCreated": "{{ record.dateCreated }}"
+	    {% endif %}
+    }
+    </script>
+    <style>
+        body {
+            max-width:100vw;
+            overflow-x:hidden
+        }
+        .oembed-target video {
+            max-width: 100vw;
+            max-height: 100vh;
+        }
+        @media (min-width: 1024px) {
+            .oembedfallback {
+                width: 40vw;
+                height: 50vh;
+            }
+
+            .oembed-target {
+                display: inline-block;
+                height: 50vh;
+                width: 40vw;
+            }
+            .oembed-target iframe {
+                width: 100%;
+                height: 100%;
+            }
+        }
+        @media screen and (max-width: 1023px) {
+            .Article.Article--single {
+                display: block;
+                width: 100vw;
+            }
+            .Aside.Aside--single {
+                display: block;
+                width: 100vw;
+            }
+            .oembedfallback {
+                width: 100vw;
+                height: 66vw;
+            }
+            .oembed-target {
+                display: block;
+                width: 100vw;
+            }
+            .oembed-target iframe {
+                width: 100vw;
+                height: 66vw;
+            }
+            .Article--single .Article-image img {
+                max-width: 100vw;
+                max-height: 100vh;
+            }
+        }
+    </style>
+{% endblock %}

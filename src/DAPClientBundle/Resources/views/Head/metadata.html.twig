@@ -1,0 +1,13 @@
+<meta charset="utf-8" />
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width" />
+<meta name="description" content="{{ metadata.description }}" />
+<meta name="keywords" content="{{ metadata.keywords }}" />
+<meta name="author" content="{{ metadata.author }}" />
+{% for key, value in detailmeta %}
+<meta property="{{ key }}" content="{{ value }}" />
+{% endfor %}
+<link rel="icon" type="image/png" href="{{ asset('bundles/dapclient/node_modules/dap-client-frontend/dist/images/favicon-32x32.png') }}" sizes="32x32">
+<link rel="icon" type="image/png" href="{{ asset('bundles/dapclient/node_modules/dap-client-frontend/dist/images/favicon-16x16.png') }}" sizes="16x16">
+<link rel="icon" type='image/png' href="{{ asset('bundles/dapclient/node_modules/dap-client-frontend/dist/images/favicon.png') }}">
+<link rel="icon" type='image/x-icon' href="{{ asset('bundles/dapclient/node_modules/dap-client-frontend/dist/images/favicon.ico') }}">

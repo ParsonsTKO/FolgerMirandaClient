@@ -1,0 +1,214 @@
+{% extends "DAPClientBundle::base_layout.html.twig" %}
+
+{% block head_title %}
+	{{ render(controller("DAPClientBundle:Head:title", {"viewTitle": "Search results"})) }}
+{% endblock %}
+
+{% block page_style %}Page Page--details{% endblock %}
+
+{% block content %}
+    <div class="TopBar">
+    	<div class="container">
+    		<div class="row">
+    			<div class="col-md-12">
+    				<section class="TopBar-block TopBar-block--search">
+    					<div class="Search Search--tiny">
+    						<form method="get" action="{{ path("dap_client_search") }}">
+    							<input type="text" class="Search-input" placeholder="Search...">
+    						</form>
+    					</div>
+    				</section>
+    				<section class="TopBar-block">
+    					<group class="Metadata">
+        					<div class="Metadata-label">
+        						{{ "Media types"|upper }}
+        					</div>
+        					<div class="Metadata-value">
+        						<select class="Metadata-select">
+        							<option value="">TODO</option>
+        							<option value="">1</option>
+        							<option value="">2</option>
+        						</select>
+        					</div>
+    					</group>
+    				</section>
+    				<section class="TopBar-block">
+    					<group class="Metadata">
+        					<div class="Metadata-label">
+        						{{ "Time periods"|upper }}
+        					</div>
+        					<div class="Metadata-value">
+        						<select class="Metadata-select">
+        							<option value="">TODO</option>
+        							<option value="">1</option>
+        							<option value="">2</option>
+        						</select>
+        					</div>
+    					</group>
+    				</section>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+    <div class="Main">
+    	<div class="container">
+    		<div class="row">
+    			<aside class="Aside col-md-3">
+    				<section class="SearchFilters">
+    					<h4 class="SearchFilters-title">
+    						Refine your Search
+    					</h4>
+    					<div class="SearchFilters-main">
+    						<div class="SearchFilters-group">
+    							<label class="Label SearchFilters-label">TODO</label>
+    							<div class="SearchFilters-option">
+    								<span class="SearchFilters-optionName">
+    									<a href="#">
+    										Lorem ipsum
+    									</a>
+    								</span>
+    								<span class="SearchFilters-optionCount">TODO</span>
+    							</div>
+    							<div class="SearchFilters-option">
+    								<span class="SearchFilters-optionName">
+    									<a href="#">
+    										Lorem ipsum
+    									</a>
+    								</span>
+    								<span class="SearchFilters-optionCount">TODO</span>
+    							</div>
+    							<div class="SearchFilters-option">
+    								<span class="SearchFilters-optionName">
+    									<a href="#">
+    										Lorem ipsum
+    									</a>
+    								</span>
+    								<span class="SearchFilters-optionCount">TODO</span>
+    							</div>
+    						</div>
+						</div>
+    				</section>
+    			</aside>
+    			<article class="Article Article--archive col-md-9">
+    				<section class="HeaderArchive">
+    					<div class="row">
+    						<div class="HeaderArchive-title">
+    							Displaying <strong>{% if result.records is defined and result.records|length > 0 %}{{ result.records|length }}{% endif %}</strong> results for <br>
+    							<strong>""</strong>
+    						</div>
+    						<div class="HeaderArchive-filters">
+    							<div class="FormGroup">
+    								<span class="FormGroup-name">SORT BY</span> 
+									<select class="FormGroup-field Select">
+										<option>TODO</option>
+            							<option value="">1</option>
+            							<option value="">2</option>
+									</select>
+    							</div>
+    						</div>
+    					</div>
+    				</section>
+    				{% if result.records is defined and result.records|length > 0 %}
+        				<section class="EntriesArchive">
+        					<ul class="EntriesArchive-list">
+        						{% for record in result.records %}
+        							{% set type = "detail" %}
+                    				{% set urlName = "name" %}
+                    				{% set urlDapID = "id" %}
+                    				
+                    				{% if record.name != "" %}
+                    				    {% set urlName = record.name|replace({'[': '', ']': '', ':': '', ',': '', '/': '', '.': '', "’": '-', ' ': '-'})|lower %}
+                    				{% endif %}
+                    				
+                    				{% if record.dapID != "" %}
+                    				    {% set urlDapID = record.dapID %}
+                    				{% endif %}
+                    				
+                    				{% set url = path('dap_client_detail', {'type': type, 'name': urlName, 'dapID': urlDapID}) %}
+                    				
+                					<li class="EntriesArchive-entry">
+                						<figure class="EntriesArchive-picture">
+                							<a href="{{ url }}" class="">
+                								<img class="" src="http://placehold.it/80x80" alt="">
+                							</a>
+                						</figure>
+                						<summary class="EntriesArchive-summary">
+                							<a href="{{ url }}" class=""> 
+                							    {% if record.name is defined %}
+                    							    {{ record.name }}
+                    							{% endif %}
+                    						</a>
+                						</summary>
+                						<div class="EntriesArchive-metadata">
+                							<div>
+                                        		<label>Creator: </label>
+                                        		<span>
+                                        			{% if record.creator is defined %}
+                                            		    {% if record.creator.givenName is defined %}{{ record.creator.givenName }}{% endif %}
+                                            		    {% if record.creator.familyName is defined %}{{ record.creator.familyName }}{% endif %}
+                                            		 {% else %}
+                                            		 	--
+                                            		{% endif %}
+                                        		</span>
+                                        	</div>
+                							<div>
+                                        		<label>Date: </label>
+                                        		<span>
+                                        			{% if record.datePublished is defined %}
+                        								{{ record.datePublished.startDate }}
+                                        			{% else %}
+                                            		 	--
+                                            		{% endif %}
+                                        		</span>
+                                        	</div>
+                							<div>
+                                        		<label>Type: </label>
+                                        		<span>
+                                        		    {% if record.additionalType is defined %}
+                                        		        {{ record.additionalType }}
+                                        			{% else %}
+                                            		 	--
+                                            		{% endif %}
+                                        		</span>
+                                        	</div>
+                                        	<div>
+                                        		<label>Location: </label>
+                                        		<span>
+                                        			{% if record.locationCreated is defined %}
+                                            		    {% if record.locationCreated.addressLocality %}{{ record.locationCreated.addressLocality }}{% endif %}
+                                            		    {% if record.locationCreated.addressCountry %}{{ record.locationCreated.addressCountry }}{% endif %}
+                                        			{% else %}
+                                            		 	--
+                                            		{% endif %}
+                                        		</span>
+                                        	</div>
+                                        </div>
+                    				</li>
+                    			{% endfor %}
+        					</ul>
+        				</section>
+        			{% endif %}
+        			<nav class="Pagination" aria-label="Page navigation">
+    					<ul>
+    						<li class="is-disabled">
+    							<a href="#" aria-label="Previous">
+    								<span aria-hidden="true">&laquo;</span>
+    							</a>
+    						</li>
+    						<li class="is-active"><a href="#">1</a></li>
+    						<li><a href="#">2</a></li>
+    						<li><a href="#">3</a></li>
+    						<li><a href="#">4</a></li>
+    						<li><a href="#">5</a></li>
+    						<li>
+    							<a href="#" aria-label="Next">
+    								<span aria-hidden="true">&raquo;</span>
+    							</a>
+    						</li>
+    					</ul>
+    				</nav>
+    			</article>
+    		</div>
+    	</div>
+    </div>
+{% endblock %}

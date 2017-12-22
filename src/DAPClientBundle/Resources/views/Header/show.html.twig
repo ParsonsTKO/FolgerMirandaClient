@@ -1,0 +1,56 @@
+<header class="Header" style="background-color: #000; padding: 0;">
+	<div class="container" style="padding: 1rem">
+		<div class="row">
+			<div class="col-md-5">
+				<a href="https://www.folger.edu/" class="Logo Logo--negative">
+					<img class="Logo-img" src="{{ asset('bundles/dapclient/node_modules/dap-client-frontend/dist/images/logo.png') }}">
+				</a>
+			</div>
+{#
+			<div class="col-md-3 text-center">
+                {% if showback is defined and showback == true %}
+				<div id="returnToSearch"><a href="/"><img src="{{ asset('icons/png/001-arrows.png') }}" alt="Return to Search" title="Return to Search" style="height:3.375rem"/></a></div>
+                {% endif %}
+			</div>
+#}
+{#
+			<div class="col-md-4">
+				<div class="text-right">
+					<div class="CountCollection" data-dropdown-for="#userCollection" title="Add to Compendium">
+						<span>&nbsp;</span>
+					</div>
+				</div>
+				<div class="DropdownCollection" id="userCollection" style="display: none">
+
+				</div>
+			</div>
+#}
+		</div>
+	</div>
+</header>
+<div class="underHeader" style="background-color: #676767;max-width:100%;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-xs-9">
+                <div style="color:#fff; display:block;padding: 1em 0; font-size: 1.5em;">
+                    {#
+                    {% if showback is defined and showback == true %}
+                        <a href="/" style="font-size:0.5em;color:#fff;background-color: rgba(255,255,255,0.02);padding:0.2em 0.5em;border: 1px; border-style:solid;border-color:rgba(255,255,255,0.2);border-radius:4px;">&#x2190; New Search</a>
+                    {% endif %}
+                    #}
+                    <a href="/" style="color:#fff;">Miranda Digital Asset Platform Prototype</a>
+                </div>
+            </div>
+			<div class="col-md-4 col-md-offset-2 col-xs-3">
+				<div class="text-right" style="margin-top: 1em; padding-bottom: 2em;">
+					<div class="CountCollection" data-dropdown-for="#userCollection" title="Add to Compendium">
+						<span>&nbsp;</span>
+					</div>
+				</div>
+				<div class="DropdownCollection" id="userCollection" style="display: none">
+
+				</div>
+			</div>
+        </div>
+    </div>
+</div>

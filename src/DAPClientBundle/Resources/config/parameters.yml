@@ -1,0 +1,44 @@
+parameters:
+    dap_client.head:
+        metadata:
+            #image: '/bundles/dapclient/images/favicon.ico'
+            title_suffix: 'Folger Shakespeare Library - Digital Asset Platform'
+            author: 'Folger Shakespeare Library'
+            copyright: 'Folger Shakespeare Library'
+            description: "The Miranda digital asset platform is the new home for the Folger's collections online."
+            keywords: 'folger, shakespeare, library'
+
+    dap_client.search:
+        views:
+            result:
+                method: GET
+                #endpoint: 'http://dap.parsonstko.com/graphql'
+                endpoint: 'http://dapdev.dev/graphql'
+                record:
+                    GET_option: query
+                    GET_option_param: query
+                    GET_option_value: '{records{dapID,recordType,name,creator{givenName,familyName,authority}}}'
+                    POST_options:
+                
+            detail:
+                method: GET
+                #endpoint: 'http://dap.parsonstko.com/graphql'
+                endpoint: 'http://dapdev.dev/graphql'
+                #images_endpoint: 'http://dap.parsonstko.com/'
+                images_endpoint: 'http://dapdev.dev/'
+                images_path: 'var/folger/storage/images/'
+                binary_endpoint: 'http://dapdev.dev/'
+                #binary_endpoint: 'http://dap.parsonstko.com/'
+                binary_path: 'var/folger/storage/binary/'
+                public_url: 'http://dapclient.dev/'
+                #public_url: 'http://search.dap.parsonstko.com/'
+                record:
+                    GET_option: query
+                    GET_option_param: query
+                    GET_option_value: '{records(dapID:"dapIDValue"){dapID,recordType,about{uri,description},additionalType,alternateName,creator{givenName,familyName,authority},dateCreated,datePublished{startDate,endDate},description,extent,file_location,folgerCallNumber,folgerDimensions,folgerProvenance,internalRelations{remoteUniqueID,dapID,name,description,date,mediaFormat,location,thumbnail},folgerRelatedItems{id,folgerRemoteIdentification{folgerRemoteUniqueID,folgerRemoteSystemID},folgerRelationshipType,folgerObjectType,label,mpso,description,label,mpso,description},format,from,genre{search,uri},inLanguage,isBasedOn,license,locationCreated{addressLocality,addressCountry},MPSO,name,position,publisher,size,images{rootfile,callNumber,pageNumber,multiPageSortOrder,title,author,imprintOrigin,bibId,holdingsId,lunaObjectId,lunaImageId,lunaURL,size4jpgURL,size5jpgURL,size6jpgURL,size7jpgURL,dateCreated,dateUpdated}}}'
+                    POST_options:
+                images:
+                    GET_option: query
+                    GET_option_param: query
+                    GET_option_value: '{records(rootfile:"rootfileValue"){dapID,recordType,rootfile,callNumber,pageNumber,multiPageSortOrder,title,author,imprintOrigin,bibId,holdingsId,lunaObjectId,lunaImageId,lunaURL,size4jpgURL,size5jpgURL,size6jpgURL,size7jpgURL,dateCreated,dateUpdated}}#}'
+                    POST_options:

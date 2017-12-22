@@ -1,0 +1,333 @@
+{% extends "DAPClientBundle::base_layout.html.twig" %}
+
+{% block head_title %}
+    {{ render(controller("DAPClientBundle:Head:title", {"viewTitle": "Search results"})) }}
+{% endblock %}
+
+{% block header %}
+    {{ render(controller("DAPClientBundle:Header:show", {"showback": true})) }}
+{% endblock %}
+
+{% block page_style %}Page Page--details{% endblock %}
+
+{% block content %}
+	<div class="TopBar">
+		<div class="container">
+			<form method="get" action="{{ path("dap_client_search") }}">
+                {# currentsearchform|raw #}
+				<div class="row">
+					<div class="col-md-12">
+						<section class="TopBar-block TopBar-block--search">
+							<div class="Search Search--tiny">
+								<input type="text" class="Search-input" placeholder="Search..." name="searchterm" value="{{ searchterm }}">
+							</div>
+						</section>
+						<section class="TopBar-block">
+							<group class="Metadata">
+								<div class="Metadata-label">
+                                    {{ "Media Format"|upper }}
+								</div>
+								<div class="Metadata-value">
+									<select class="Metadata-select" name="format">
+										<option value="">Any</option>
+										<option value="text" {% if formatfilter == 'text' %} selected{% endif %}>Text</option>
+										<option value="Notated music" {% if formatfilter == 'notated music' %} selected{% endif %}>Notated Music</option>
+										<option value="Sound" {% if formatfilter == 'sound' %} selected{% endif %}>Sound</option>
+										<option value="Image" {% if formatfilter == 'image' %} selected{% endif %}>Image</option>
+										<option value="3D Object" {% if formatfilter == '3d object' %} selected{% endif %}>3D Object</option>
+										<option value="Data[set]" {% if formatfilter == 'data[set]' %} selected{% endif %}>Data[set]</option>
+										<option value="Interactive Resource" {% if formatfilter == 'interactive resource' %} selected{% endif %}>Interactive Resource</option>
+										<option value="Video" {% if formatfilter == 'video' %} selected{% endif %}>Video</option>
+									</select>
+								</div>
+							</group>
+						</section>
+						<section class="TopBar-block">
+                            <group class="Metadata FormGroup FormGroup--timeRange" style="margin-bottom:0;">
+                                <label class="FormGroup-label" style="font-size:12px;text-transform:uppercase;letter-spacing: 1px;font-weight: 600;">Created</label>
+                                <div class="FormGroup-fieldset" style="margin-right:0;">
+                                    <label style="display: inline">FROM</label>
+                                    <input class="FormGroup-field" style="height:auto;" type="number" name="createdfrom"{% if usersearch.createdFrom is defined %} value="{{ usersearch.createdFrom }}"{% endif %}>
+                                </div>
+                                <div class="FormGroup-fieldset">
+                                    <label style="display: inline">TO</label>
+                                    <input class="FormGroup-field" style="height:auto;" type="number" name="createduntil"{% if usersearch.createdUntil is defined %} value="{{ usersearch.createdUntil }}"{% endif %}>
+                                </div>
+                            </group>
+{#
+							<group class="Metadata">
+								<div class="Metadata-label">
+                                    {{ "Time periods"|upper }}
+								</div>
+								<div class="Metadata-value">
+									<select class="Metadata-select" name="timeperiod">
+										<option value="0" {% if timeperiodfilter is not defined or timeperiodfilter == 0 %} selected{% endif %}>Any</option>
+										<option value="1" {% if timeperiodfilter == '1' %} selected{% endif %}>Before 1600</option>
+										<option value="2" {% if timeperiodfilter == '2' %} selected{% endif %}>1600-1700</option>
+										<option value="3" {% if timeperiodfilter == '3' %} selected{% endif %}>1700-1800</option>
+										<option value="4" {% if timeperiodfilter == '4' %} selected{% endif %}>1800-1900</option>
+										<option value="5" {% if timeperiodfilter == '5' %} selected{% endif %}>1900-2000</option>
+										<option value="6" {% if timeperiodfilter == '6' %} selected{% endif %}>From 2000</option>
+									</select>
+								</div>
+							</group>
+#}
+						</section>
+						<section class="TopBar-block">
+							<group class="Metadata">
+								<div class="Metadata-label">
+
+								</div>
+								<div class="Metadata-value">
+									<input type="submit" value="NEW SEARCH" class="btn btn-primary" style="background-color: #61190d;"/>
+								</div>
+							</group>
+						</section>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+    {#	<!--DEBUG STUFF FOR JOHN -->
+    <div class="container">
+        <div class="row" style="background-color: #30ba62;">
+            <div class="col-md-1" onclick="jQuery('.aliw3al').toggle();">Toggle debug</div>
+            <div class="col-md-10 aliw3al" style="display: none;">
+
+                {{ debuginfo|raw }}
+            </div>
+        </div>
+    </div>
+        <!--END DEBUG STUFF FOR JOHN -->#}
+	<div class="Main">
+		<div class="container">
+			<div class="row">
+				<aside class="Aside col-md-3">
+					<section class="SearchFilters">
+						<h4 class="SearchFilters-title">
+							Explore Your Results
+						</h4>
+                        {% if facets is defined and facets|length > 0 %}
+                            {% for facetname, facetgroup in facets %}
+								<label class="Label SearchFilters-label">{{ facetname }}</label>
+                                {%  for thisfacet in facetgroup %}
+									<div class="SearchFilters-option">
+                                        {#{  dump(thisfacet) }#}
+										<span class="SearchFilters-optionName">
+                                            <a href="search{{ currentsearch }}&refine={{ thisfacet.facet }}&refineto={{ thisfacet.key }}">
+                                                {{ thisfacet.key | capitalize }}
+                                            </a>
+                                        </span>
+										<span class="SearchFilters-optionCount">{{ thisfacet.count }}</span>
+									</div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
+						<!--<div class="SearchFilters-main">
+                            <div class="SearchFilters-group">
+                                <label class="Label SearchFilters-label">TODO</label>
+                                <div class="SearchFilters-option">
+                                    <span class="SearchFilters-optionName">
+                                        <a href="#">
+                                            Lorem ipsum
+                                        </a>
+                                    </span>
+                                    <span class="SearchFilters-optionCount">TODO</span>
+                                </div>
+                                <div class="SearchFilters-option">
+                                    <span class="SearchFilters-optionName">
+                                        <a href="#">
+                                            Lorem ipsum
+                                        </a>
+                                    </span>
+                                    <span class="SearchFilters-optionCount">TODO</span>
+                                </div>
+                                <div class="SearchFilters-option">
+                                    <span class="SearchFilters-optionName">
+                                        <a href="#">
+                                            Lorem ipsum
+                                        </a>
+                                    </span>
+                                    <span class="SearchFilters-optionCount">TODO</span>
+                                </div>
+                            </div>
+                        </div>-->
+					</section>
+				</aside>
+				<article class="Article Article--archive col-md-9">
+                    {#<section class="HeaderArchive">
+                        <div class="row">
+                            <div class="HeaderArchive-title">
+                                Displaying <strong>{% if result.records is defined and result.records|length > 0 %}{{ result.records|length }}{% endif %}</strong> results for <br>
+                                <strong>"{{ searchterm }}"</strong>
+                            </div>
+                            <div class="HeaderArchive-filters">
+                                <div class="FormGroup">
+                                    <!--<span class="FormGroup-name">SORT BY</span>
+                                    <select class="FormGroup-field Select">
+                                        <option>TODO</option>
+                                        <option value="">1</option>
+                                        <option value="">2</option>
+                                    </select>-->
+                                </div>
+                            </div>
+                        </div>
+                    </section>#}
+                    {% if result.records is defined and result.records|length > 0 %}
+						<section class="EntriesArchive">
+							<ul class="EntriesArchive-list">
+                                {% for record in result.records %}
+                                    {% set type = "detail" %}
+                                    {% set urlName = "name" %}
+                                    {% set urlDapID = "id" %}
+
+                                    {% if record.name != "" %}
+                                        {% set urlName = record.name|replace({'[': '', ']': '', ':': '', ',': '', '/': '', '.': '', "’": '-', ' ': '-'})|lower %}
+                                    {% endif %}
+
+                                    {% if record.dapID != "" %}
+                                        {% set urlDapID = record.dapID %}
+                                    {% endif %}
+
+                                    {% set url = path('dap_client_detail', {'type': type, 'name': urlName, 'dapID': urlDapID}) %}
+                                    {% if record.thumbnail is defined %}
+                                        {% set thumbnail = record.thumbnail %}
+                                    {% elseif record.format is not defined %}
+                                        {% set thumbnail = '/icons/png/000-item.png' %}
+                                    {% elseif record.format == 'text' or record.format == 'printed text'%}
+                                        {% set thumbnail = '/icons/png/004-text-document.png' %}
+									{%  elseif record.format =='manuscript text' %}
+										{% set thumbnail = '/icons/png/001-manuscript.png' %}
+                                    {% elseif record.format == 'sound' %}
+                                        {% set thumbnail = '/icons/png/006-music-player.png' %}
+                                    {% elseif record.format == 'csv' or record.format == 'data[set]'%}
+                                        {% set thumbnail = '/icons/png/003-spreadsheet.png' %}
+                                    {% elseif record.format == 'video' %}
+                                        {% set thumbnail = '/icons/png/001-video-camera.png' %}
+                                    {% elseif record.format == 'image' %}
+                                        {% set thumbnail = '/icons/png/005-picture.png' %}
+                                    {% elseif record.format == 'notated music' %}
+                                        {% set thumbnail = '/icons/png/003-musical-notation-of-music-class.png' %}
+                                    {% elseif record.format == '3d object' %}
+                                        {% set thumbnail = '/icons/png/002-3d.png' %}
+                                    {% elseif record.format == 'interactive resource' %}
+                                        {% set thumbnail = '/icons/png/001-interactivity.png' %}
+                                    {% else %}
+                                        {% set thumbnail = '/icons/png/000-item.png' %}
+                                    {% endif %}
+
+									<li class="EntriesArchive-entry">
+										<figure class="EntriesArchive-picture">
+											<a href="{{ url }}" class="" style="display:inline-block; width:80px;text-align: center">
+												<img class="" src="{{ thumbnail }}" alt="{% if record.name is defined %}{{ record.name }}{% endif %}">
+											</a>
+										</figure>
+										<summary class="EntriesArchive-summary">
+											<a href="{{ url }}" class="" style="font-family: sans-serif">
+                                                {% if record.name is defined %}
+                                                    {{ record.name }}
+                                                {% endif %}
+											</a>
+										</summary>
+										<div class="EntriesArchive-metadata">
+                                            {% if record.creator  %}
+												<div>
+													<label>Creator: </label>
+													<span>
+                                                    {% if record.creator.givenName  %}{{ record.creator.givenName }}{% endif %}
+                                                        {% if record.creator.familyName  %}{{ record.creator.familyName }}{% endif %}
+                                        		</span>
+												</div>
+                                            {% endif %}
+                                            {% if record.dateCreated is defined or record.datePublished is defined %}
+												<div>
+													<label>Date: </label>
+													<span>
+                                        			{% if record.dateCreated is defined %}
+                                                        {{ record.dateCreated }}
+                                                    {% else %}
+                                                        {% if record.datePublished is defined %}
+                                                            {% if record.datePublished.startDate %}
+                                                                {{ record.datePublished.startDate }}
+                                                                {% if record.datePublished.endDate %}
+																	- {{ record.datePublished.endDate }}
+                                                                {% endif %}
+                                                            {% else %}
+                                                                {% if record.datePublished.endDate %}
+                                                                    {{ record.datePublished.endDate }}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endif %}
+														--
+                                                    {% endif %}
+                                        		</span>
+												</div>
+                                            {% endif %}
+											<div>
+												<label>Media Format: </label>
+												<span>
+                                        		    {% if record.format is defined %}
+                                                        {{ record.format|capitalize }}
+                                                    {% else %}
+														--
+                                                    {% endif %}
+                                        		</span>
+											</div>
+
+                                            {% if record.locationCreated is defined %}
+												<div>
+													<label>Location: </label>
+													<span>
+                                            		    {% if record.locationCreated.address %}{{ record.locationCreated.address }}{% endif %}
+                                                        {% if record.locationCreated.addressLocality %}{{ record.locationCreated.addressLocality }}{% endif %}
+
+                                        		</span>
+												</div>
+                                            {% endif %}
+                                            {% if record.folgerCallNumber is defined %}
+												<div>
+													<label>Call Number: </label>
+													<span>
+                                            		    {{ record.folgerCallNumber }}
+                                        			</span>
+												</div>
+                                            {% endif %}
+										</div>
+									</li>
+                                {% endfor %}
+							</ul>
+						</section>
+                    {% endif %}
+                    {% if totalpages == 0 %}
+						<h2>No results found</h2>
+                    {% endif %}
+                    {% if totalpages > 0 %}
+						<nav class="Pagination" aria-label="Page navigation">
+							<!--Page {{ currentpage }} of {{ totalpages }}-->
+							<ul>
+								<li {#class="is-disabled"#}>
+									<a href="{{ currentsearch }}&pagenumber=0" aria-label="Previous">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+								{% set pagingstart = max(1, (currentpage - 4)) %}
+								{% set pagingend = min((currentpage + 4), totalpages) %}
+								{%  if pagingstart == 1%}
+									{% set pagingend = min(8+pagingstart, totalpages) %}
+								{% endif %}
+                                {% for i in pagingstart..pagingend %}
+									<li{% if i == currentpage %} class="is-active"{% endif %}><a href="{{ currentsearch }}&pagenumber={{ i - 1 }}">{{ i }}</a></li>
+                                {% endfor %}
+								<li>
+									<a href="{{ currentsearch }}&pagenumber={{ totalpages - 1 }}" aria-label="Next">
+										<span aria-hidden="true">&raquo;</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+                    {% endif %}
+				</article>
+			</div>
+		</div>
+	</div>
+{% endblock %}

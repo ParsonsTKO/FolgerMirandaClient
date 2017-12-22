@@ -1,0 +1,3 @@
+imports:
+    - { resource: 'assets.yml' }
+    - { resource: 'parameters.yml' }

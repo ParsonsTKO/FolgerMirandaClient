@@ -1,0 +1,29 @@
+{
+  "name": "dap-client",
+  "authors": [
+    "Parsonstko"
+  ],
+  "description": "Folger DAP Client html builds",
+  "keywords": [
+    "Atomic design"
+  ],
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/ptko/dap-client-builds",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "vendor/"
+  ],
+  "main": [
+      "/dist/css/app.css",
+      "/dist/js/app.js"
+  ],
+  "dependencies": {
+    "dap-client-frontend": "git@bitbucket.org:ptko/dap-client-builds.git"
+  }
+
+}

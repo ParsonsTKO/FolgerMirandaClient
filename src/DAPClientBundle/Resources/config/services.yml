@@ -1,0 +1,36 @@
+services:
+    dap_client.logger: "@monolog.logger.dap_client"
+    
+    dap_client.service.search:
+        class: DAPClientBundle\Services\SearchService
+        arguments: ["@service_container", '@?dap_client.logger']
+        calls:
+            - method: setSearchSettings
+              arguments: ['%dap_client.search%']
+
+    dap_client.service.content:
+        class: DAPClientBundle\Services\ContentService
+        arguments: ["@service_container", '@?dap_client.logger']
+
+    #extensions
+    dap_client.twig_extension:
+        class: DAPClientBundle\Twig\DAPClientExtension
+        tags:
+            - { name: twig.extension }
+
+    #carried over for elasticsearch
+    em:
+        class: Doctrine\ORM\EntityManager
+        factory: ['@doctrine', 'getManager']
+
+    dap.resolver.base:
+        class: DAPClientBundle\Resolver\AbstractResolver
+        abstract: true
+        calls:
+            - [ init, ['@em']]
+
+    dap.resolver.elastic:
+        class: DAPClientBundle\Resolver\ElasticResolver
+        parent: 'dap.resolver.base'
+        arguments: ['@es.manager']
+    #end carried over for elasticsearch

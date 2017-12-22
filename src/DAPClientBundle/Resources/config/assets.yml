@@ -1,0 +1,8 @@
+assetic:
+    assets:
+        dap_client_css:
+            inputs:
+                - 'bundles/dapclient/vendor/dap-client-frontend/dist/css/bundle.min.css'
+        dap_client_javascript:
+            inputs:
+                - '@DAPClientBundle/Resources/public/vendor/dap-client-frontend/dist/js/bundle.min.js'

@@ -1,0 +1,26 @@
+dap_client_homepage:
+    path: /
+    defaults: { _controller: DAPClientBundle:View:home }
+
+dap_client_search:
+    path: /search
+    defaults: { _controller: DAPClientBundle:Search:result }
+    
+dap_client_detail:
+    path: /{type}/{name}/{dapID}
+    defaults: { _controller: DAPClientBundle:Search:detail }
+    methods: GET
+
+dap_client_alternative_search:
+    path: /alternativesearch
+    defaults: { _controller: DAPClientBundle:Search:alternativeResult }
+
+dap_client_download:
+    path: /download/image/{rootfile}/{image}
+    defaults: { _controller: DAPClientBundle:View:downloadImage }
+    methods: GET
+
+dap_client_binary_download:
+    path: /binary/{binaryFile}
+    defaults: { _controller: DAPClientBundle:View:downloadBinary }
+    methods: GET

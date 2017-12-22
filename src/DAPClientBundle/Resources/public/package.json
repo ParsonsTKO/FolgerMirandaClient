@@ -1,0 +1,21 @@
+{
+  "name": "dap-client",
+  "version": "1.2.0",
+  "description": "DAP Client Frontend",
+  "main": "README.md",
+  "homepage": "https://bitbucket.org/ptko/dap-client-builds",
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:ptko/dap-client-builds.git"
+  },
+  "author": "DAP",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "dap-client-frontend": "git+ssh://git@bitbucket.org:ptko/dap-client-builds.git#v1.0.0"
+  },
+  "engines": {
+    "node": "~8.2",
+    "npm": "~5.3"
+  }
+}

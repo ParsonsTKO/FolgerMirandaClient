@@ -1,0 +1,237 @@
+{% extends "DAPClientBundle::base_layout.html.twig" %}
+
+{% block content %}
+	<form method="get" action="{{ path("dap_client_search") }}">
+	<div class="Block Block--primary">
+    	<div class="container">
+    		<div class="row">
+    			<div class="col-md-8 col-md-offset-2">
+    				<h4 class="Title Title--primary u-marginBottom-medium text-center">
+    					What are you looking for?
+    				</h4>
+
+    					<div class="Search Search--display">
+    						<input id="searchText" type="text" class="Search-field" name="searchterm" placeholder="Search...">
+    						<button class="Search-submit icon-search" type="submit"></button>
+    					</div>
+
+    			</div>
+    		</div>
+    	</div>
+
+    </div>
+    <div class="Block Block--secondary">
+        	<div class="container">
+                {%  if usermessage  %}
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3 bg-danger">
+                        <h4 class="text-center">{{ usermessage|raw }}</h4>
+					</div>
+				</div>
+				{% endif %}
+                <div class="row" id="firstonly" style="display: none;">
+                    <div class="col-md-8 col-md-offset-2" style="background-color: #676767; color:#fff; padding:0.5em;">
+                        <h2 class="text-center">Welcome to Miranda!</h2>
+                        <p>This prototype of the Miranda Digital Asset Platform contains a sample of our physical and
+							digital collection items and a limited range of features. Some of the items contain digital media
+							you can view, read, listen to, watch, or download. If you don&rsquo;t see any digital media attached to a
+							particular record, it is not yet available on Miranda. We look forward to adding more of the
+							Folger&rsquo;s treasures to the platform before the beta launch in late 2018.</p>
+                    </div>
+                </div>
+                <script>if( (sessionStorage && sessionStorage.getItem('beenherelately') !== '1') || window.location.href.indexOf('heythereshowmethemessage') !== -1) {
+                        document.getElementById('firstonly').setAttribute('style', 'display:block;');
+                        sessionStorage.setItem('beenherelately', '1');
+                    }</script>
+        		<div class="row">
+        			<div class="col-md-12">
+        				{#<div class="Block text-center u-marginBottom-medium">
+        					<h4 class="Title Title--secondary">
+        						Media Types IN DAP by Year
+        					</h4>
+        					<img src="{{ asset('bundles/dapclient/node_modules/dap-client-frontend/dist/images/graphic-media-types-DAP-by-year.svg') }}">
+        				</div>#}
+        				<div class="Block row">
+        					<div
+        						class="col-sm-6 u-divisorRight u-paddingRight-large text-right">
+        						<div class="FormGroup FormGroup--timeRange">
+        							<label class="FormGroup-label">Created in:</label>
+        							<div class="FormGroup-fieldset">
+        								<label>FROM</label>
+        								<input class="FormGroup-field" type="number" name="createdfrom">
+        								<hr>
+        							</div>
+        							<div class="FormGroup-fieldset">
+        								<label>TO</label>
+        								<input class="FormGroup-field" type="number" name="createduntil">
+        							</div>
+        						</div>
+        						<!--<div class="FormGroup FormGroup--timeRange">
+        							<label class="FormGroup-label">Circa:</label>
+        							<div class="FormGroup-fieldset">
+        								<input class="FormGroup-field" type="number">
+        								<hr>
+        							</div>
+        							<div class="FormGroup-fieldset">
+        								<input class="FormGroup-field" type="number">
+        							</div>
+        						</div>-->
+        					</div>
+        					<div class="col-sm-6 u-paddingLeft-large u-marginTop-small">
+        						<div class="FormGroup FormGroup--block">
+        							<label class="FormGroup-label">I’m looking for materials in:</label>
+        							<select class="Select Select--secondary" name="languagefilter">
+                                        <option value="">Any Language</option>
+{#
+        								<option value="eng">English</option>
+										<!--<option value="spa">Spanish</option>-->
+										<option value="ben">Bengali</option>
+#}
+                                        {{ languagesOffered|raw }}
+        							</select>
+        						</div>
+        					</div>
+        				</div>
+        			</div>
+        		</div>
+        		<div class="Block row">
+        			<div class="col-sm-5 col-sm-offset-1 u-paddingLeft-small">
+        				<h4 class="Title Title--primary">What Format?</h4>
+        				<div class="Selector Selector--mediaType">
+        				{#	<div class="Selector-item is-active">
+        						<span class="Selector-icon Selector-icon--default">ALL</span>
+        						<label class="Selector-label">All Formats</label>
+        					</div>
+        					<div class="Selector-item">
+        						<i class="Selector-icon icon-printed"></i>
+        						<label class="Selector-label">Printed</label>
+        					</div>
+        					<div class="Selector-item">
+        						<i class="Selector-icon icon-pics"></i>
+        						<label class="Selector-label">Image</label>
+        					</div>
+        					<div class="Selector-item">
+        						<i class="Selector-icon icon-music"></i>
+        						<label class="Selector-label">Audio</label>
+        					</div>
+        					<div class="Selector-item">
+        						<i class="Selector-icon icon-video-play"></i>
+        						<label class="Selector-label">Video</label>
+        					</div>
+        				 #}
+							<select class="Select Select--secondary" name="format">
+								<option value="">Any</option>
+								<option value="text">Text</option>
+								<option value="notated music">Notated Music</option>
+								<option value="sound">Sound</option>
+								<option value="image">Image</option>
+								<option value="3d object">3D Object</option>
+								<option value="dataset">Data[set]</option>
+								<option value="interactive resource">Interactive Resource</option>
+								<option value="video">Video</option>
+                                <option value="manuscript text">Manuscript Text</option>
+                                <option value="printed text">Printed Text</option>
+							</select>
+						</div>
+        			</div>
+        			<div class="col-sm-5 u-paddingLeft-small">
+        				<h4 class="Title Title--primary">What Genre?</h4>
+        				<div class="Selector Selector--mediaType">
+        				{#	<div class="Selector-item is-active">
+        						<span class="Selector-icon Selector-icon--default">ALL</span>
+        						<label class="Selector-label">All Formats</label>
+        					</div>
+        					<div class="Selector-item">
+        						<i class="Selector-icon icon-printed"></i>
+        						<label class="Selector-label">Playbills</label>
+        					</div>
+        					<div class="Selector-item">
+        						<i class="Selector-icon icon-music"></i>
+        						<label class="Selector-label">Music</label>
+        					</div>
+        					<div class="Selector-item">
+        						<i class="Selector-icon icon-scene"></i>
+        						<label class="Selector-label"> Performance Materials </label>
+        					</div>
+        					<div class="Selector-item">
+        						<i class="Selector-icon icon-book-closed"></i>
+        						<label class="Selector-label">Books</label>
+        					</div>
+        				#}
+
+							<select class="Select Select--secondary" name="genre">
+								<option value="">Any</option>
+{#
+								<option value="Art">Art</option>
+								<option value="Commentary">Commentary</option>
+								<option value="Communications">Communications</option>
+								<option value="Derivative works">Derivative works</option>
+								<option value="Humor">Humor</option>
+								<option value="Literary and Performing Arts">Literary and Performing Arts</option>
+								<option value="News">News</option>
+								<option value="Official Documents">Official Documents</option>
+								<option value="Performance Materials">Performance Materials</option>
+								<option value="Promotional Materials">Promotional Materials</option>
+								<option value="Realia">Realia</option>
+								<option value="Reference">Reference</option>
+#}
+								<option value="Poems">Poems</option>
+								<option value="Plays (performed works)">Plays (performed works)</option>
+								<option value="Prologues and epilogues">Prologues and epilogues</option>
+								<option value="Photographs">Photographs</option>
+								<option value="Portraits">Portraits</option>
+								<option value="Translations (documents)">Translations (documents)</option>
+								<option value="Annotations (provenance)">Annotations (provenance)</option>
+								<option value="Live sound recordings">Live sound recordings</option>
+								<option value="Manuscripts (documents)">Manuscripts (documents)</option>
+							</select>
+        				</div>
+        			</div>
+        		</div>
+        		<div class="Block u-marginBottom-large row">
+        			<div class="col-md-12">
+        				<div class="text-center">
+        					<button type="submit" class="Button Button--terciary Button--medium Button--relief">
+        						Search
+        					</button>
+        				</div>
+        			</div>
+        		</div>
+				<div class="row">
+					<div class="col-md-offset-2 col-md-8 homeblock">
+                        <h3 style="text-align: center">What can I find on Miranda?</h3>
+
+                        <p>The Miranda prototype contains about 1,800 records, which contain bibliographic information
+							about physical and digital objects at the Folger. Each of these records has its own page, and
+							some of them contain digital media you can view, read, hear, watch, or download. If you don&rsquo;t
+							see any digital media attached to a particular record, it is not yet available on Miranda. We will
+							continue to add records and digital media to the platform as we prepare for Miranda&#39;s beta
+							launch in 2018.</p>
+						<p>
+							If you have any feedback for us, send an email to <a href="mailto:dap@folger.edu">dap@folger.edu</a>. We&#39;ll take your views into
+							consideration as we work on future versions of Miranda.</p>
+
+						<p>	Here are some of the things you can find on Miranda now:</p>
+
+						<p>
+							View actress <a href="/detail/miss-ellen-terry-as-%2522juliet%2522-in-shakespeare-s-romeo-and-juliet-graphic--window-%2526-grove/61819e91-445f-4e90-9529-5d4d9ea739f1">Ellen Terry</a> as Juliet; a <a href="/detail/autograph-and-typescript-letters-signed-from-and-to-julia-marlowe-new-york-and-hc-folger-new-york-manuscript-1904-1907/21231904-4b45-4816-bd99-402f5f07ed45">letter from Julia Marlowe</a> to Henry Folger; <a href="/detail/bracelet-of-edwin-booth's-hair-realia/2d64bde6-fd16-44ee-9eb9-04f326ebf918">Edwin Booth’s hair bracelet</a>; <a href="http://bit.ly/2zZm1FH">colorful plants</a> ; and <a href="/detail/aer-graphic--martin-de-voss-figurauit-;-crispin-van-de-passe-sculpsit-et-excudit/6eea0485-98d0-432f-9a33-c6ffbcd1f6ea">“Aer”</a>.
+						</p>
+						<p>
+						Watch <a href="/detail/taming-of-the-shrew-%2528motion-picture-1908%2529/c2037e1f-8e6d-4926-b638-bfc5ba87ae53">Taming of the Shrew</a> (1908) and videos offering insight into <a href="/detail/hamlet's-soliloquies/bd37a283-cc83-448d-bf1b-b378bb056a0f"> Hamlet’s soliloquies</a>, <a href="/detail/an-american-merchant/bc2931e4-ccd0-4f1c-90b8-3c95d60c220e">using The Merchant of Venice in the classroom</a>, and <a href="/detail/translating-shakespeare's-plays-for-different-cultures/ecb8a33f-2135-477a-8679-e94c50263626">translating Shakespeare</a>.
+						</p>
+						<p>
+						Read from <a href="/detail/hya%25CC%2584malet%25CC%25A3a--%2528dinmarkira-yuvara%25CC%2584ja%2529--sekspiy%25CC%25A3ara-%3B-manomohana-ra%25CC%2584ya-anu%25CC%2584dita/beafb49c-f4df-4d49-814d-9c77289413eb">Bengali renditions of Hamlet</a>, <a href="/detail/sus%CC%81i%CC%84la%CC%84-bi%CC%84rsim%CC%A3ha--na%CC%84t%CC%A3ak--sekspiyar-kr%CC%A5ta-na%CC%84t%CC%A3ak-bis%CC%81esh-abalamvana-kariya%CC%84-biracita/96b2b09b-6885-4f20-8d68-789690de158e">Cymbeline</a> and <a href="/detail/marcyant%CC%A3-af-vinis-(bhinisera-banika)--sekspiy%CC%A3ara-;-manomohana-ra%CC%84ya-anu%CC%84dita/1f8f3ae9-2e90-4f60-98bc-2cdb8fc8ace8">The Merchant of Venice</a>; from <a href="http://bit.ly/2hvXpgL">Montaigne’s Essays</a>; <a href="http://bit.ly/2zZpfca">More’s Utopia</a>; Chaucer’s <a href="/detail/whan-that-apprill-with-his-shouris-sote-and-the-droughte-of-marche-hath-percid-%25C3%25BEe-rote-/1debff16-4e55-4504-a939-0a120f87f64c">Canterbury Tales</a>; a <a href="/detail/teatro-italiano----amleto-principi-danimarca-playbill/50811d72-9897-4ead-b69c-8625490d6fb0">playbill for Amleto</a>; and <a href="/detail/hamleto-reg%25CC%2582ido-de-danujo--tragedio-en-kvin-aktoj--w-shakespeare-%3B-tradukis-l-zamenhof/1e35c336-a62b-42e9-88dc-dd0c33120dcb">Hamlet in Esperanto</a>.
+						</p>
+						<p>
+						Listen to the <a href="/detail/florence-christmas-music-of-the-trecento/d9522e87-b103-4d8d-9d01-3d466b6439f4">Folger Consort</a> perform music inspired by medieval <a href="/detail/florence-christmas-music-of-the-trecento/d9522e87-b103-4d8d-9d01-3d466b6439f4">Florence</a>, <a href="/detail/triptych-i-three-centuries-of-german-music/c7d7bae2-6d8b-4fab-8a85-fcd8b8adffa0">Germany</a>, and <a href="/detail/more-than-miraculous-harp/caf26e0c-0965-476a-86a3-f610b0eda335">miraculous harps</a>; podcasts on <a href="/detail/shakespeare-in-sign-language/b9f4b306-7cd5-4a4d-9af2-b834ceb0fb1d">Shakespeare in sign language</a>, <a href="/detail/shakespeare-not-stirred/14071de6-9027-4a3b-a0ed-73d5a9bd4551">Bard-inspired cocktails</a>, <a href="/detail/shakespeare-and-girlhood/10646c84-eddb-431f-a511-9671ba80e64a">Shakespeare and girlhood</a>, and <a href="/detail/shakespeare-lol/c2c1d45d-2e73-4964-bfca-d5cf7855b8f2">Shakespearean humor</a>.
+						</p>
+						<p>
+						See proclamations from <a href="/detail/by-the-queene-a-proclamation-for-bringing-into-the-realme-of-vnlawfull-and-seditious-bookes/e18de6f3-ee0a-4b46-b2bf-f219e167153c">Queen Elizabeth I against “seditious books”</a> and <a href="/detail/by-the-king-a-proclamation-to-restrain-the-spreading-of-false-news-and-licentious-talking-of-matters-of-state-and-government/f3d78b2e-83b5-4264-b7d3-0bd693c48c5f">from King Charles II against “false news”</a>; a <a href="http://bit.ly/2z6i0Cw">hunting manual</a>; a <a href="/detail/book-on-heraldry-manuscript-compiled-ca-1604-ca-1615/238e8c0b-10c7-490f-b03d-9de922dc1b9d">book on heraldry</a>; and a <a href="/detail/recipes-for-ale-manuscript-17th-century/54262587-d784-4668-8a94-fe2f0b638319">recipe for making ale</a>.
+						</p>
+
+					</div>
+        	</div>
+        </form>
+    </div>
+
+{% endblock %}
