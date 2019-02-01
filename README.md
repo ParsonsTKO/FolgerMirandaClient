@@ -1,6 +1,6 @@
 # THIS REPOSITORY IS DEPRICATED AND HERE FOR HISTORICAL REASONS THE NEW WORK IS LOCATED AT THE URL BELOW #
 
-https://github.com/ParsonsTKO/FolgerMiranda-Dap-Server
+https://github.com/ParsonsTKO/FolgerMiranda-Dap-Client
 
 # README #
 
