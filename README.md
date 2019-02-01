@@ -1,3 +1,7 @@
+# THIS REPOSITORY IS DEPRICATED AND HERE FOR HISTORICAL REASONS THE NEW WORK IS LOCATED AT THE URL BELOW #
+
+https://github.com/ParsonsTKO/FolgerMiranda-Dap-Server
+
 # README #
 
 This prototype project for the initial client to the Miranda Digital Asset Platform was built by ParsonsTKO at the behest of The Folger Shakespeare Library. All original work on this project is the exclusive property of The Folger Shakespeare Library, and is available under the MIT license. 
